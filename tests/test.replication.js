@@ -1779,13 +1779,17 @@ interHTTPAdapters.map(function (adapters) {
           server: true,
           live: true,
           complete: function () {
-            remote.put(doc2);
-            // This setTimeout is needed to ensure no further changes come
-            // through
+            // this setTimeout ensures Safari doesn't fire the
+            // replicate.cancel() before the remote.put()
             setTimeout(function () {
-              count.should.equal(4);
-              changes.cancel();
-            }, 200);
+              remote.put(doc2);
+              // This setTimeout is needed to ensure no further changes come
+              // through
+              setTimeout(function () {
+                count.should.equal(4);
+                changes.cancel();
+              }, 200);
+            }, 50);
           }
         });
         var changes = db.changes({
